@@ -15,13 +15,14 @@ class OnBoardingVC: UIViewController ,PaperOnboardingDataSource,PaperOnboardingD
     @IBOutlet weak var skipButton: UIButton!
     fileprivate let items = [
         
+        
         OnboardingItemInfo(informationImage: UIImage(named: "brush")!,
-                           title: "Yemek uygulamasına hosgeldiniz",
+                           title: "WELCOME TO OUR FOOD APP",
                            description: "You Can Order A HOME FOOD !",
                            pageIcon: UIImage(named: "brush")!,
-                           color: UIColor.orange,
-                           titleColor: UIColor.red,
-                           descriptionColor: UIColor.orange,
+                           color: UIColor.systemIndigo,
+                           titleColor: UIColor.systemGray,
+                           descriptionColor: UIColor.systemGray2,
                            titleFont: UIFont.boldSystemFont(ofSize: 30),
                            descriptionFont: UIFont.boldSystemFont(ofSize: 15)),
         
@@ -29,21 +30,22 @@ class OnBoardingVC: UIViewController ,PaperOnboardingDataSource,PaperOnboardingD
                            title: "WHAT WOULD YOU LIKE TO EAT?",
                            description: "HOME FOOD!",
                            pageIcon: UIImage(named: "brush")!,
-                           color: UIColor.blue,
-                           titleColor: UIColor.red,
-                           descriptionColor: UIColor.orange,
+                           color: UIColor.systemBlue,
+                           titleColor: UIColor.systemGray,
+                           descriptionColor: UIColor.systemGray2,
                            titleFont: UIFont.boldSystemFont(ofSize: 30),
                            descriptionFont: UIFont.boldSystemFont(ofSize: 15)),
         OnboardingItemInfo(informationImage: UIImage(named: "rocket")!,
                            title: "THANK YOU FOR USING APP",
-                           description: "Thanks",
+                           description: "LET'S GO",
                            pageIcon: UIImage(named: "brush")!,
-                           color: UIColor.yellow,
-                           titleColor: UIColor.red,
-                           descriptionColor: UIColor.orange,
+                           color: UIColor.systemRed,
+                           titleColor: UIColor.systemGray,
+                           descriptionColor: UIColor.systemGray2,
                            titleFont: UIFont.boldSystemFont(ofSize: 30),
                            descriptionFont: UIFont.boldSystemFont(ofSize: 15))
     ]
+    
     
     func onboardingItem(at index: Int) -> OnboardingItemInfo {
         return items[index]
@@ -56,16 +58,25 @@ class OnBoardingVC: UIViewController ,PaperOnboardingDataSource,PaperOnboardingD
         skipButton.isHidden = index == 2 ? false : true
     }
     
-  
     
     override func viewDidLoad() {
-        
+        self.navigationItem.setHidesBackButton(true, animated: false)
         skipButton.isHidden = true
         setupPaperOnboardingView()
         view.bringSubviewToFront(skipButton)
         super.viewDidLoad()
         
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    override func viewWillDisappear(_ animated: Bool)
+    {
+        super.viewWillDisappear(animated)
+        self.navigationController?.isNavigationBarHidden = false
+    }
+    
     private func setupPaperOnboardingView() {
         let onboarding = PaperOnboarding()
         onboarding.delegate = self

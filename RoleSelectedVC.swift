@@ -7,26 +7,24 @@
 //
 
 import UIKit
-
+import Firebase
+import FirebaseDatabase
 class RoleSelectedVC: UIViewController {
-
+    
+    var db : Firestore!
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        navigationController?.navigationBar.barTintColor = .systemIndigo
+        db = Firestore.firestore()
     }
-    
-    @IBAction func segueToMain(_ sender: Any) {
-        performSegue(withIdentifier: "toMain", sender: self)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.isNavigationBarHidden = false
     }
-    
-  
     @IBAction func customerClicked(_ sender: Any) {
         
-        performSegue(withIdentifier: "loginCustomer", sender: self)
     }
-    
     @IBAction func ownerClicked(_ sender: Any) {
-        performSegue(withIdentifier: "loginOwner", sender: self)
+        
     }
 }
