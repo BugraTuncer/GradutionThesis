@@ -38,9 +38,9 @@ class OwnerMapsVC: UIViewController{
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         var ownerRegisterVC = segue.destination as! OwnerRegisterVC
         ownerRegisterVC.locationText = locationText.text!
-      
+        
     }
-
+    
     func getCurrentLocation() {
         // Ask for Authorisation from the User.
         self.locationManager.requestAlwaysAuthorization()

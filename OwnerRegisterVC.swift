@@ -27,9 +27,9 @@ class OwnerRegisterVC: UIViewController {
         
     }
     @objc func dismissKeyboard()
-       {
-           view.endEditing(true)
-       }
+    {
+        view.endEditing(true)
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         locationLabel.text = locationText
@@ -62,6 +62,7 @@ class OwnerRegisterVC: UIViewController {
                         print("Document successfully written!")
                     }
                 }
+                self.performSegue(withIdentifier: "toMenu", sender: nil)
             }
         }
     }

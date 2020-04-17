@@ -18,6 +18,7 @@ class CustomerLoginVC: UIViewController {
         super.viewDidLoad()
         
     }
+    
     override func viewWillDisappear(_ animated: Bool)
     {
         super.viewWillDisappear(animated)
@@ -31,8 +32,10 @@ class CustomerLoginVC: UIViewController {
             } else {
                 self.emailText.text = ""
                 self.passwordText.text = ""
+                self.performSegue(withIdentifier: "toMenu", sender: nil)
             }
         }
+    
         
     }
     @IBAction func registerClicked(_ sender: Any) {

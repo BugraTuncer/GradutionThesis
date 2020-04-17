@@ -31,6 +31,7 @@ class OwnerLoginVC: UIViewController {
             } else {
                 self.emailText.text = ""
                 self.passwordText.text = ""
+                self.performSegue(withIdentifier: "toMenu", sender: nil)
             }
         }
         

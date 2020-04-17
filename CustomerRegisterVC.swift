@@ -46,12 +46,12 @@ class CustomerRegisterVC: UIViewController {
             } else {
                 
                 self.db.collection("Customer").document(self.emailText.text!).setData([
-                    
                     "E-mail" : self.emailText.text!,
                     "Password" : self.passwordText.text!,
                     "Location" : self.locationText
                     
                     ])
+                    
                 { err in
                     if let err = err {
                         print("Error writing document: \(err)")
@@ -59,6 +59,8 @@ class CustomerRegisterVC: UIViewController {
                         print("Document successfully written!")
                     }
                 }
+                
+                self.performSegue(withIdentifier: "toMenu", sender: nil)
             }
         }
     }
