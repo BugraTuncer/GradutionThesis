@@ -39,6 +39,7 @@ class OwnerRegisterVC: UIViewController {
         super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
     }
+    
     @IBAction func locationClicked(_ sender: Any) {
     }
     @IBAction func registerClicked(_ sender: Any) {

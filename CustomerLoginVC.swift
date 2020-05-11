@@ -16,14 +16,18 @@ class CustomerLoginVC: UIViewController {
     override func viewDidLoad() {
         navigationController?.navigationBar.barTintColor = .systemIndigo
         super.viewDidLoad()
-        
     }
-    
     override func viewWillDisappear(_ animated: Bool)
     {
         super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
+                if self.isMovingFromParent {
+        
+                    self.performSegue(withIdentifier: "toRoleSelected", sender: nil)
+                    self.dismiss(animated: true, completion: nil)
+                }
     }
+    
     @IBAction func continueClicked(_ sender: Any) {
         Auth.auth().signIn(withEmail: (emailText.text?.lowercased())!, password: passwordText.text!) { (data, error) in
             if error != nil {
@@ -35,10 +39,12 @@ class CustomerLoginVC: UIViewController {
                 self.performSegue(withIdentifier: "toMenu", sender: nil)
             }
         }
-    
+        
         
     }
     @IBAction func registerClicked(_ sender: Any) {
+        
+        
         
     }
     func makeAlert(titleInput:String, messageInput:String) {

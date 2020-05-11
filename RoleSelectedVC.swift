@@ -22,9 +22,10 @@ class RoleSelectedVC: UIViewController {
         self.navigationController?.isNavigationBarHidden = false
     }
     @IBAction func customerClicked(_ sender: Any) {
+       
         
     }
     @IBAction func ownerClicked(_ sender: Any) {
-        
+       
     }
 }

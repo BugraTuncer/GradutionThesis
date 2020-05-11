@@ -15,7 +15,6 @@ class OnBoardingVC: UIViewController ,PaperOnboardingDataSource,PaperOnboardingD
     @IBOutlet weak var skipButton: UIButton!
     fileprivate let items = [
         
-        
         OnboardingItemInfo(informationImage: UIImage(named: "brush")!,
                            title: "WELCOME TO OUR FOOD APP",
                            description: "You Can Order A HOME FOOD !",
@@ -45,8 +44,6 @@ class OnBoardingVC: UIViewController ,PaperOnboardingDataSource,PaperOnboardingD
                            titleFont: UIFont.boldSystemFont(ofSize: 30),
                            descriptionFont: UIFont.boldSystemFont(ofSize: 15))
     ]
-    
-    
     func onboardingItem(at index: Int) -> OnboardingItemInfo {
         return items[index]
     }
@@ -57,7 +54,6 @@ class OnBoardingVC: UIViewController ,PaperOnboardingDataSource,PaperOnboardingD
     func onboardingWillTransitonToIndex(_ index: Int) {
         skipButton.isHidden = index == 2 ? false : true
     }
-    
     
     override func viewDidLoad() {
         self.navigationItem.setHidesBackButton(true, animated: false)
@@ -97,3 +93,4 @@ class OnBoardingVC: UIViewController ,PaperOnboardingDataSource,PaperOnboardingD
         }
     }
 }
+

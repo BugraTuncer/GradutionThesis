@@ -63,7 +63,6 @@ extension OwnerMapsVC : CLLocationManagerDelegate {
 }
 extension OwnerMapsVC : GMSAutocompleteViewControllerDelegate {
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-        print("Place name: \(String(describing: place.name))")
         dismiss(animated: true, completion: nil)
         
         self.mapsView.clear()
@@ -91,7 +90,7 @@ extension OwnerMapsVC : GMSAutocompleteViewControllerDelegate {
         marker.map = self.mapsView
         
         self.mapsView.camera = GMSCameraPosition.camera(withTarget: cord2D, zoom: 15)
-        print(locationText.text)
+        
         
     }
     

@@ -1,22 +1,22 @@
 //
-//  CustomerMapsVC.swift
+//  ChangeLocationVC.swift
 //  GradutionThesis
 //
-//  Created by Buğra Tunçer on 29.02.2020.
+//  Created by Buğra Tunçer on 3.05.2020.
 //  Copyright © 2020 Buğra Tunçer. All rights reserved.
 //
 
 import UIKit
 import GoogleMaps
 import GooglePlaces
-
-class CustomerMapsVC : UIViewController {
+import Firebase
+class ChangeLocationVC: UIViewController {
+    var db : Firestore!
     let locationManager = CLLocationManager()
-    @IBOutlet weak var locationText: UITextField!
-    
     @IBOutlet weak var mapView: GMSMapView!
+    @IBOutlet weak var locationText: UITextField!
     override func viewDidLoad() {
-        
+        db = Firestore.firestore()
         self.makeAlert()
         super.viewDidLoad()
         getCurrentLocation()
@@ -25,9 +25,11 @@ class CustomerMapsVC : UIViewController {
         mapView.isMyLocationEnabled = true
         // Do any additional setup after loading the view.
     }
+    
     @IBAction func locationClicked(_ sender: Any) {
         goToPlaces()
     }
+    
     func goToPlaces() {
         
         locationText.resignFirstResponder()
@@ -38,10 +40,15 @@ class CustomerMapsVC : UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let customerRegisterVC = segue.destination as! CustomerRegisterVC
-        customerRegisterVC.locationText = locationText.text!
+        let customerInfos = segue.destination as! CustomerInfosVC
+        customerInfos.locationText = locationText.text!
     }
     
+    @IBAction func konumuAlClicked(_ sender: Any) {
+        db.collection("Customer").document((Auth.auth().currentUser?.email)!).updateData([
+            "Location" : locationText.text!        
+        ])
+    }
     func getCurrentLocation() {
         // Ask for Authorisation from the User.
         self.locationManager.requestAlwaysAuthorization()
@@ -56,13 +63,13 @@ class CustomerMapsVC : UIViewController {
         }
     }
 }
-extension CustomerMapsVC : CLLocationManagerDelegate {
+extension ChangeLocationVC : CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue : CLLocationCoordinate2D = manager.location?.coordinate else {return}
         
     }
 }
-extension CustomerMapsVC : GMSAutocompleteViewControllerDelegate {
+extension ChangeLocationVC : GMSAutocompleteViewControllerDelegate {
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
         
         dismiss(animated: true, completion: nil)

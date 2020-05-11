@@ -19,6 +19,7 @@ class MenuCustomerTableViewVC: UITableViewController {
         tableArray.append(CellData(title: "Account"))
         tableArray.append(CellData(title: "Help"))
         tableArray.append(CellData(title: "Logout"))
+        
         super.viewDidLoad()
         
         // Uncomment the following line to preserve selection between presentations
@@ -42,10 +43,22 @@ class MenuCustomerTableViewVC: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print(tableArray)
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableView", for: indexPath)
         cell.textLabel?.text = (tableArray[indexPath.row].title)
         return cell
+    }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if tableArray[indexPath.row].title == "Logout" {
+            
+            self.performSegue(withIdentifier: "toLogin", sender: nil)
+            
+        } else if tableArray[indexPath.row].title == "Help"{
+            
+        } else if tableArray[indexPath.row].title == "Account" {
+            
+            self.performSegue(withIdentifier: "toInfo", sender: nil)
+            
+        }
     }
     
     

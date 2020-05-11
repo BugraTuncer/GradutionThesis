@@ -13,12 +13,10 @@ import FirebaseStorage
 class OwnerFoodVC: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
     
     @IBOutlet weak var plateLabel: UILabel!
-    
     @IBOutlet weak var stepper: UIStepper!
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var addButton: UIButton!
-    static var i : Int = 0
     var db : Firestore!
     override func viewDidLoad() {
         imageView.isHidden = true
@@ -61,13 +59,13 @@ class OwnerFoodVC: UIViewController,UIImagePickerControllerDelegate,UINavigation
                         imageReference.downloadURL { (url, error) in
                             let imageURL = url?.absoluteString
                             
-                            self.db.collection("Owner").document((Auth.auth().currentUser?.email)!).updateData([
-                                "Platecount\(OwnerFoodVC.self.i)" : Int(self.stepper.value),
-                                "imageURL\(OwnerFoodVC.self.i)" : imageURL!,
-                                "nameFood\(OwnerFoodVC.self.i)"  : self.nameText.text!,
-                                "Day\(OwnerFoodVC.self.i)" : components.day,
-                                "Hour\(OwnerFoodVC.self.i)" : components.hour,
-                                "Minute\(OwnerFoodVC.self.i)" : components.minute
+                            self.db.collection("Owner").document((Auth.auth().currentUser?.email)!).collection("Food").document("\(self.nameText.text!)").setData([
+                                "Platecount" : Int(self.stepper.value),
+                                "imageURL" : imageURL!,
+                                "nameFood"  : self.nameText.text!,
+                                "Day" : components.day,
+                                "Hour" : components.hour,
+                                "Minute" : components.minute
                                 ])
                             { err in
                                 if let err = err {
@@ -81,9 +79,7 @@ class OwnerFoodVC: UIViewController,UIImagePickerControllerDelegate,UINavigation
                         }
                     }
                 }
-                
             }
-            OwnerFoodVC.self.i = OwnerFoodVC.self.i + 1
         }else {
             self.makeAlert()
         }

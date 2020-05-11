@@ -14,11 +14,11 @@ class MenuCustomerVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     var articles = [ArticleItem]()
     var userArray = [OwnerUser]()
+    var foodArray = [FoodOwnerUser]()
     var customerLocation : String = ""
     var db : Firestore!
     var i : Int = 1
     override func viewDidLoad() {
-        
         db = Firestore.firestore()
         super.viewDidLoad()
         let menuItem = UIButton()
@@ -44,57 +44,68 @@ class MenuCustomerVC: UIViewController {
         
     }
     @IBAction func sepetClicked(_ sender: Any) {
-        userArray.removeAll()
-        articles.removeAll()
         self.performSegue(withIdentifier: "toCartVC", sender: self)
     }
     
     func getOwnerDocuments() {
-        
         db.collection("Owner").addSnapshotListener { (snapshot, err) in
             if err != nil {
                 print("Get document has failed")
             } else {
                 if snapshot?.isEmpty != true && snapshot != nil {
+                    self.userArray.removeAll()
                     for document in snapshot!.documents {
                         var user = OwnerUser()
                         if let location = document.get("Location") as? String {
                             user.location = location
                         }
-                        if (document.get("Day1") != nil) {
-                            while (document.get("Day\(self.i)")) != nil {
-                                if let dateDay = document.get("Day\(self.i)") as? Int {
-                                    user.day.append(dateDay)
+                        if let email = document.get("E-mail") as? String {
+                            user.email = email
+                            self.db.collection("Owner").document(email).collection("Food").addSnapshotListener { (snapshotX, err) in
+                                
+                                if err != nil {
+                                    print(err?.localizedDescription)
+                                } else {
+                                    if snapshotX?.isEmpty != true && snapshotX != nil {
+                                        self.foodArray.removeAll()
+                                        for foods in snapshotX!.documents {
+                                            var foodOwnerUser = FoodOwnerUser()
+                                            if let plateCount = foods.get("Platecount") as? Int {
+                                                foodOwnerUser.plateCount = plateCount
+                                               
+                                            }
+                                            if let imageURL = foods.get("imageURL") as? String {
+                                                foodOwnerUser.imageUrl = imageURL
+                                            }
+                                            if let nameFood = foods.get("nameFood") as? String {
+                                                
+                                                foodOwnerUser.nameFood = nameFood
+                                            }
+                                            if let day = foods.get("Day") as? Int {
+                                                foodOwnerUser.day = day
+                                            }
+                                            if let hour = foods.get("Hour") as? Int {
+                                                foodOwnerUser.hour = hour
+                                            }
+                                            if let minute = foods.get("Minute") as? Int {
+                                                foodOwnerUser.minute = minute
+                                            }
+                                            foodOwnerUser.email = user.email
+                                            foodOwnerUser.Location = user.location
+                                            self.foodArray.append(foodOwnerUser)
+                                        }
+                                    }
+                                  
                                 }
-                                if let dateHour = document.get("Hour\(self.i)") as? Int {
-                                    user.hour.append(dateHour)
-                                }
-                                if let dateMinute = document.get("Minute\(self.i)") as? Int {
-                                    user.minute.append(dateMinute)
-                                }
-                                if let imageURL = document.get("imageURL\(self.i)") as? String {
-                                    user.imageUrl.append(imageURL)
-                                }
-                                if let foodName = document.get("nameFood\(self.i)") as? String {
-                                    user.nameFood.append(foodName)
-                                }
-                                if let plateCount = document.get("Platecount\(self.i)") as? Int {
-                                    user.plateNumber.append(self.i)
-                                    user.plateCount.append(plateCount)
-                                }
-                                if let emailText = document.get("E-mail") as? String {
-                                    user.email = emailText
-                                }
-                                self.i = self.i + 1
                             }
-                            self.i = 1
-                            self.userArray.append(user)
+                        }
+                       self.userArray.append(user)
+                            }
                         }
                     }
                 }
+        self.collectionView.reloadData()
             }
-        }
-    }
     func getCustomerLocation() {
         
         db.collection("Customer").document((Auth.auth().currentUser?.email)!).addSnapshotListener { (snapshot, error) in
@@ -102,7 +113,6 @@ class MenuCustomerVC: UIViewController {
                 print("Get customer document has failed")
             } else {
                 if let location = snapshot?.get("Location") as? String {
-                    print("Customer Location : \(location)")
                     self.customerLocation = location
                 }
             }
@@ -114,28 +124,19 @@ class MenuCustomerVC: UIViewController {
         let date = NSDate()
         let calendar = Calendar.current
         let currentComponents = calendar.dateComponents([.day,.hour,.minute], from: date as Date)
-        
-        for x in userArray{
-            if customerLocation == x.location {
-                print(x.nameFood)
-                for y in 0..<x.day.count {
-                    var articleUser = ArticleItem()
-                    if currentComponents.day! - x.day[y] == 1 && currentComponents.hour! - x.hour[y] == 0 && currentComponents.minute! - x.minute[y] == 0 {
-                        print("delete")
-                    }else{
-                        articleUser.emailText = x.email
-                       // if x.plateNumber[y] > 0 {
-                        articleUser.plateNumber = x.plateNumber[y]
-                       // }
-                        articleUser.plateCount = x.plateCount[y]
-                        articleUser.imageURL = x.imageUrl[y]
-                        articleUser.nameFood = x.nameFood[y]
-                        articleUser.hour = abs(currentComponents.hour! - x.hour[y])
-                        articleUser.minute = abs(currentComponents.minute! - x.minute[y])
-                    }
-                    articles.append(articleUser)
-                }
+        articles.removeAll()
+        for x in foodArray {
+            if x.Location == customerLocation {
+                var articlesModel = ArticleItem()
+                articlesModel.hour = x.hour
+                articlesModel.minute = x.minute
+                articlesModel.nameFood = x.nameFood
+                articlesModel.plateCount = x.plateCount
+                articlesModel.imageURL = x.imageUrl
+                articlesModel.emailText = x.email
+                articles.append(articlesModel)
             }
+            
         }
     }
 }
@@ -175,16 +176,12 @@ extension MenuCustomerVC : UICollectionViewDataSource,UICollectionViewDelegate {
         let url = URL(string: article.imageURL)!
         let storyboard = UIStoryboard (name: "Main", bundle: nil)
         let resultVC = storyboard.instantiateViewController(withIdentifier: "CartShowVC")as? CartShowVC
-        
-        resultVC?.platei = article.plateNumber
+        resultVC?.imageURL = article.imageURL
         resultVC?.imageData.sd_setImage(with: url)
         resultVC?.emailText = article.emailText
-        resultVC?.foodName = "Yemek ismi : \(article.nameFood)"
+        resultVC?.foodName = article.nameFood
         resultVC?.dateText = "Kalan saat : \(article.hour) ve Dakika : \(article.minute)"
         resultVC?.plateCount = String(article.plateCount)
-        resultVC?.plateNumber = article.plateNumber
-        articles.removeAll()
-        userArray.removeAll()
         self.navigationController?.pushViewController(resultVC!, animated: true)
     }
     
